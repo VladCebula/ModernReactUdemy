@@ -5,7 +5,7 @@ import VideoList from './VideoList';
 import VideoDetails from './VideoDetail';
 
 class App extends React.Component {
-  state = { videos: [], selectedVideo: null };
+  state = { videos: [], selectedVideo: null, comments: [] };
   onTermSubmit = async (term) => {
     try {
       const response = await youtube.get('/search', {
@@ -23,14 +23,32 @@ class App extends React.Component {
     }
   };
 
-  onVideoSelect = (video) => {
+  onVideoSelect = async (video) => {
+    try {
+      const commentResponse = await youtube.get('/commentThreads', {
+        params: {
+          part: 'id,snippet',
+          videoId: video.id.videoId,
+          key: KEY,
+        },
+      });
+      console.log('seting coment data state');
+      this.setState({ comments: commentResponse.data.items });
+    } catch (err) {
+      console.error(err);
+    }
+    console.log('setting selsected video state');
     this.setState({ selectedVideo: video });
+    console.log(this.state.comments);
   };
   render() {
     const player = this.state.selectedVideo ? (
-      <div className="ui row">
+      <div className="ui row" style={{ marginLeft: '20px' }}>
         <div className="eleven wide column">
-          <VideoDetails video={this.state.selectedVideo} />
+          <VideoDetails
+            video={this.state.selectedVideo}
+            comments={this.state.comments}
+          />
         </div>
         <div className="five wide column">
           <VideoList

@@ -3,9 +3,7 @@ import React from 'react';
 const CommentDetail = (props) => {
   return (
     <div className="comment">
-      <a href="/" className="avatar">
-        <img alt="avatar" src={props.avatar} />
-      </a>
+      <img className="ui avatar image" alt="avatar" src={props.avatar} />
       <div className="content">
         <a href="/" className="author">
           {props.author}
